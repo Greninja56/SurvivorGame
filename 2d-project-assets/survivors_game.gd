@@ -1,6 +1,10 @@
 extends Node2D
 
+var time_left = 120
 
+func _ready():
+	%Countdown.text = "Survive: " + str(time_left)
+	%WinTimer.start()
 
 func spawn_mob():
 	var new_mob = preload("res://mob.tscn").instantiate()
@@ -17,3 +21,11 @@ func _on_timer_timeout() -> void:
 func _on_player_health_depleted() -> void:
 	%GameOver.visible = true
 	get_tree().paused = true
+
+
+func _on_win_timer_timeout() -> void:
+	time_left -= 1
+	%Countdown.text = "Survive: " + str(time_left)
+	if time_left <= 0:
+		%Victory.visible = true
+		get_tree().paused = true
