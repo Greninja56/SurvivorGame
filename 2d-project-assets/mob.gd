@@ -16,7 +16,7 @@ func take_damage():
 	health -= 1
 	%Slime.play_hurt()
 	
-	if health == 0:
+	if health <= 0:
 		queue_free()
 		
 		const SMOKE_SCENE = preload("res://smoke_explosion/smoke_explosion.tscn")
