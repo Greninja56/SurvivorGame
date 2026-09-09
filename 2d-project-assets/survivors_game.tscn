@@ -32,10 +32,23 @@ offset_bottom = 161.0
 grow_horizontal = 2
 theme_override_colors/font_color = Color(0.23921569, 0.21960784, 0.9647059, 1)
 theme_override_font_sizes/font_size = 40
-text = "whats good
+text = "
 "
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="StoryLabel" type="Label" parent="CanvasLayer" unique_id=555148338]
+unique_name_in_owner = true
+offset_left = 329.0
+offset_top = 293.0
+offset_right = 1529.0
+offset_bottom = 993.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 75
+text = "que pasa"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="Player" parent="." unique_id=386298152 instance=ExtResource("1_3cish")]
 position = Vector2(929, 495)
@@ -77,8 +90,8 @@ position = Vector2(591, 303)
 position = Vector2(125, 695)
 
 [node name="Timer" type="Timer" parent="." unique_id=155379037]
+unique_name_in_owner = true
 wait_time = 0.3
-autostart = true
 
 [node name="GameOver" type="CanvasLayer" parent="." unique_id=658550123]
 unique_name_in_owner = true
@@ -139,6 +152,11 @@ text = "You Win!"
 [node name="WinTimer" type="Timer" parent="." unique_id=1783993796]
 unique_name_in_owner = true
 
+[node name="StoryTimer" type="Timer" parent="." unique_id=344683127]
+unique_name_in_owner = true
+wait_time = 2.0
+
 [connection signal="health_depleted" from="Player" to="." method="_on_player_health_depleted"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
 [connection signal="timeout" from="WinTimer" to="." method="_on_win_timer_timeout"]
+[connection signal="timeout" from="StoryTimer" to="." method="_on_story_timer_timeout"]
