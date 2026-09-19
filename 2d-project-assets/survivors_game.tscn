@@ -59,6 +59,7 @@ autowrap_mode = 3
 unique_name_in_owner = true
 offset_right = 123.0
 offset_bottom = 86.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 48
 
 [node name="ExtractionCompass" type="Control" parent="CanvasLayer" unique_id=545605285]
@@ -93,7 +94,7 @@ rotation = 0.0018621953
 
 [node name="Timer" type="Timer" parent="." unique_id=155379037]
 unique_name_in_owner = true
-wait_time = 3.0
+wait_time = 0.5
 
 [node name="GameOver" type="CanvasLayer" parent="." unique_id=658550123]
 unique_name_in_owner = true
