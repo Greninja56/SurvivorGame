@@ -1,20 +1,38 @@
 extends Node
 ## Autoload singleton. Register in Project Settings > Globals (Autoload) as "GameState".
-## Owns all persistent data. Later: add upgrade levels / unlocks to the save dict.
-
+## Owns all persistent data: banked gold and purchased upgrade levels.
 
 signal run_gold_changed(amount: int)
 signal banked_gold_changed(amount: int)
 
 const SAVE_PATH := "user://savegame.json"
 const DEATH_KEEP_PERCENT := 0.25  # fraction of run gold kept on death (0.0 = lose everything)
+const BASE_HEALTH := 100.0
+
+# Cost of level N = base_cost * growth^N. Tune these to how much gold a run earns.
+const UPGRADES := {
+	"health": {
+		"name": "Max Health",
+		"base_cost": 15,
+		"growth": 1.5,
+		"max_level": 100,
+		"per_level": 25.0,   # +25 max HP per level
+	},
+	"fire_rate": {
+		"name": "Fire Rate",
+		"base_cost": 20,
+		"growth": 1.5,
+		"max_level": 100,
+		"per_level": 0.15,   # +15% fire rate per level
+	},
+}
 
 var banked_gold: int = 0  # persistent, spent in the shop
 var run_gold: int = 0     # collected this run, at risk until you extract
+var upgrade_levels := {"health": 0, "fire_rate": 0}
 
 
 func _ready() -> void:
-	print("GameState loaded")
 	load_game()
 
 
@@ -59,14 +77,53 @@ func can_afford(cost: int) -> bool:
 	return banked_gold >= cost
 
 
+func get_level(id: String) -> int:
+	return int(upgrade_levels.get(id, 0))
+
+
+func is_maxed(id: String) -> bool:
+	return get_level(id) >= int(UPGRADES[id]["max_level"])
+
+
+func get_cost(id: String) -> int:
+	var up = UPGRADES[id]
+	return int(round(up["base_cost"] * pow(up["growth"], get_level(id))))
+
+
 ## Returns true if the purchase went through.
-func spend_gold(cost: int) -> bool:
+func buy_upgrade(id: String) -> bool:
+	if is_maxed(id):
+		return false
+	var cost := get_cost(id)
 	if not can_afford(cost):
 		return false
 	banked_gold -= cost
+	upgrade_levels[id] = get_level(id) + 1
 	save_game()
 	banked_gold_changed.emit(banked_gold)
 	return true
+
+
+## Short text for the shop UI showing the current bonus.
+func describe(id: String) -> String:
+	var lvl := get_level(id)
+	match id:
+		"health":
+			return "Max HP: %d" % int(get_max_health())
+		"fire_rate":
+			return "Fire rate: +%d%%" % int(lvl * UPGRADES[id]["per_level"] * 100)
+	return ""
+
+
+# --- Upgrade effects (read these from gameplay scripts) ---------------------
+
+func get_max_health() -> float:
+	return BASE_HEALTH + get_level("health") * UPGRADES["health"]["per_level"]
+
+
+## 1.0 = normal. 1.3 = shoots 30% faster.
+func get_fire_rate_multiplier() -> float:
+	return 1.0 + get_level("fire_rate") * UPGRADES["fire_rate"]["per_level"]
 
 
 # --- Save / load -----------------------------------------------------------
@@ -74,6 +131,7 @@ func spend_gold(cost: int) -> bool:
 func save_game() -> void:
 	var data := {
 		"banked_gold": banked_gold,
+		"upgrades": upgrade_levels,
 	}
 	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if file == null:
@@ -92,4 +150,8 @@ func load_game() -> void:
 	if typeof(parsed) != TYPE_DICTIONARY:
 		return  # corrupted file, keep defaults
 	banked_gold = int(parsed.get("banked_gold", 0))
+	var saved_levels = parsed.get("upgrades", {})
+	if typeof(saved_levels) == TYPE_DICTIONARY:
+		for id in upgrade_levels:
+			upgrade_levels[id] = int(saved_levels.get(id, 0))
 	banked_gold_changed.emit(banked_gold)

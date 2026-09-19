@@ -1,5 +1,7 @@
 extends Area2D
 
+func _ready():
+	$Timer.wait_time = $Timer.wait_time / GameState.get_fire_rate_multiplier()
 func _physics_process(delta):
 	var enemies_in_range = get_overlapping_bodies()
 	if enemies_in_range.size() > 0:
