@@ -1,12 +1,9 @@
 extends Control
-## Attach to the root Control of shop.tscn. The whole UI is built in code.
-## Set shop.tscn as the project's Main Scene so each session starts here.
 
-# Change this to the path of your main game scene.
 const GAME_SCENE := "res://survivors_game.tscn"
 
 var gold_label: Label
-var rows := {}  # upgrade id -> {"info": Label, "button": Button}
+var rows := {}  
 
 
 func _ready() -> void:

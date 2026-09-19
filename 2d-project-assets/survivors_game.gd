@@ -1,8 +1,10 @@
 extends Node2D
 
-var time_left = 1  # set back to 60 when you're done testing
+var time_left = 30  
 var story_index = 0
-var run_over = false  # guards against ending the run twice
+var run_over = false 
+var elapsed_time = 0.0
+var difficulty_ramp_rate = 0.01  
 
 var story_list = [
 	"Kshhhhh. Got-kshhhhhh-hing!",
@@ -19,6 +21,10 @@ func _ready():
 	%StoryLabel.text = story_list[0]
 	%StoryTimer.start()
 
+func _process(delta: float) -> void:
+	if not run_over:
+		elapsed_time += delta
+
 func start_game():
 	%Countdown.text = "Survive: " + str(time_left)
 	%WinTimer.start()
@@ -30,15 +36,19 @@ func spawn_mob():
 	new_mob.global_position = %PathFollow2D.global_position
 	var random_size = randf_range(0.5, 1.5)
 	new_mob.scale = Vector2(random_size, random_size)
+
+	var difficulty = 1.0 + elapsed_time * difficulty_ramp_rate
+	new_mob.apply_difficulty(difficulty)
+
 	add_child(new_mob)
 
 func _on_timer_timeout() -> void:
 	spawn_mob()
+	
+	%Timer.wait_time = max(0.3, %Timer.wait_time - 0.02)
 
 func _on_run_gold_changed(amount: int) -> void:
 	%GoldLabel.text = "Gold: %d" % amount
-
-# --- Run endings -----------------------------------------------------------
 
 func _on_player_health_depleted() -> void:
 	if run_over:
@@ -49,7 +59,6 @@ func _on_player_health_depleted() -> void:
 		"Kept: %d   Lost: %d" % [result.kept, result.lost]
 	)
 
-# Called by the extraction point when the player touches it
 func on_extraction_reached() -> void:
 	if run_over:
 		return
@@ -69,8 +78,6 @@ func show_results(title: String, details: String) -> void:
 func _on_restart_pressed() -> void:
 	get_tree().paused = false
 	get_tree().change_scene_to_file("res://shop.tscn")
-
-# --- Timers ----------------------------------------------------------------
 
 func _on_win_timer_timeout() -> void:
 	time_left -= 1
