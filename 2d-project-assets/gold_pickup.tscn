@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://do6aqd8pret2t"]
+
+[ext_resource type="Script" uid="uid://diqo8bv676ce4" path="res://gold_pickup.gd" id="1_j4s7n"]
+[ext_resource type="Texture2D" uid="uid://fjafj6ekc3v2" path="res://coin.png" id="2_mnka4"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_vpvrv"]
+radius = 73.33485
+
+[node name="Area2D" type="Area2D" unique_id=478643484]
+script = ExtResource("1_j4s7n")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1241560860]
+position = Vector2(-5.0000305, -2.0000305)
+scale = Vector2(0.06888889, 0.07598499)
+texture = ExtResource("2_mnka4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1931533189]
+position = Vector2(-4, 0)
+shape = SubResource("CircleShape2D_vpvrv")

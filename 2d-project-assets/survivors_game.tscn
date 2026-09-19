@@ -55,6 +55,12 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 
+[node name="GoldLabel" type="Label" parent="CanvasLayer" unique_id=1202951875]
+unique_name_in_owner = true
+offset_right = 123.0
+offset_bottom = 86.0
+theme_override_font_sizes/font_size = 48
+
 [node name="ExtractionCompass" type="Control" parent="CanvasLayer" unique_id=545605285]
 layout_mode = 3
 anchors_preset = 15
@@ -66,6 +72,7 @@ script = ExtResource("2_getvi")
 extraction_spawner_path = NodePath("../../ExtractionSpawner")
 
 [node name="Arrow" type="TextureRect" parent="CanvasLayer/ExtractionCompass" unique_id=18674096]
+z_index = 1
 layout_mode = 0
 offset_right = 430.0
 offset_bottom = 430.0
@@ -86,10 +93,11 @@ rotation = 0.0018621953
 
 [node name="Timer" type="Timer" parent="." unique_id=155379037]
 unique_name_in_owner = true
-wait_time = 0.18
+wait_time = 3.0
 
 [node name="GameOver" type="CanvasLayer" parent="." unique_id=658550123]
 unique_name_in_owner = true
+process_mode = 3
 visible = false
 
 [node name="ColorRect" type="ColorRect" parent="GameOver" unique_id=513108915]
@@ -100,35 +108,8 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.49803922)
 
-[node name="Label" type="Label" parent="GameOver/ColorRect" unique_id=1311092463]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -43.5
-offset_top = -11.5
-offset_right = 43.5
-offset_bottom = 11.5
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/font_size = 175
-text = "Game Over"
-
-[node name="Victory" type="CanvasLayer" parent="." unique_id=2071942458]
+[node name="TitleLabel" type="Label" parent="GameOver/ColorRect" unique_id=1311092463]
 unique_name_in_owner = true
-visible = false
-
-[node name="ColorRect" type="ColorRect" parent="Victory" unique_id=1535668026]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 0.49803922)
-
-[node name="Label" type="Label" parent="Victory/ColorRect" unique_id=1519533322]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -142,7 +123,23 @@ offset_bottom = 11.5
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 175
-text = "You Win!"
+horizontal_alignment = 1
+
+[node name="ResultLabel" type="Label" parent="GameOver" unique_id=797573908]
+unique_name_in_owner = true
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_font_sizes/font_size = 48
+horizontal_alignment = 1
+
+[node name="RestartButton" type="Button" parent="GameOver" unique_id=1916584645]
+unique_name_in_owner = true
+offset_left = 656.0
+offset_top = 719.0
+offset_right = 1212.0
+offset_bottom = 882.0
+theme_override_font_sizes/font_size = 40
+text = "RESTART"
 
 [node name="WinTimer" type="Timer" parent="." unique_id=1783993796]
 unique_name_in_owner = true

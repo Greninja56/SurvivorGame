@@ -16,7 +16,10 @@ func _ready() -> void:
 		_arrow = get_node_or_null(arrow_node_path)
 	else:
 		_arrow = get_node_or_null("Arrow")
-
+	if _arrow:
+		_arrow.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		_arrow.size = Vector2(480, 480)
+		_arrow.pivot_offset = _arrow.size / 2.0
 	if _extraction_spawner:
 		if _extraction_spawner.has_signal("extraction_point_spawned"):
 			_extraction_spawner.extraction_point_spawned.connect(_on_extraction_point_spawned)
@@ -55,11 +58,13 @@ func _process(_delta: float) -> void:
 
 	var direction: Vector2 = (target_screen_pos - screen_center).normalized()
 
-	var half_size := viewport_size / 2.0 - Vector2(edge_margin, edge_margin)
+	var margin: float = max(edge_margin, _arrow.size.length() / 2.0)
+	var half_size := viewport_size / 2.0 - Vector2(margin, margin)
 	var scale_x : float = INF if direction.x == 0 else abs(half_size.x / direction.x)
 	var scale_y : float = INF if direction.y == 0 else abs(half_size.y / direction.y)
 	var clamp_scale: float = min(scale_x, scale_y)
 
 	var arrow_pos := screen_center + direction * clamp_scale
+	_arrow.pivot_offset = _arrow.size / 2.0
 	_arrow.global_position = arrow_pos - _arrow.size / 2.0
 	_arrow.rotation = direction.angle()

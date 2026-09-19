@@ -56,7 +56,6 @@ func spawn_extraction_point() -> void:
 
 
 func _on_player_extracted(_player: Node2D) -> void:
-	%Victory.visible = true
 	get_tree().paused = true
 
 

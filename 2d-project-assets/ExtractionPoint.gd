@@ -17,3 +17,4 @@ func _on_body_entered(body: Node2D) -> void:
 
 	_triggered = true
 	player_extracted.emit(body)
+	get_node("/root/Game").on_extraction_reached()

@@ -1,8 +1,8 @@
 extends Node2D
 
-var time_left = 2
-
+var time_left = 1  # set back to 60 when you're done testing
 var story_index = 0
+var run_over = false  # guards against ending the run twice
 
 var story_list = [
 	"Kshhhhh. Got-kshhhhhh-hing!",
@@ -12,9 +12,13 @@ var story_list = [
 ]
 
 func _ready():
+	GameState.start_run()
+	GameState.run_gold_changed.connect(_on_run_gold_changed)
+	%GoldLabel.text = "Gold: 0"
+	%RestartButton.pressed.connect(_on_restart_pressed)
 	%StoryLabel.text = story_list[0]
 	%StoryTimer.start()
-	
+
 func start_game():
 	%Countdown.text = "Survive: " + str(time_left)
 	%WinTimer.start()
@@ -31,10 +35,43 @@ func spawn_mob():
 func _on_timer_timeout() -> void:
 	spawn_mob()
 
+func _on_run_gold_changed(amount: int) -> void:
+	%GoldLabel.text = "Gold: %d" % amount
+
+# --- Run endings -----------------------------------------------------------
+
 func _on_player_health_depleted() -> void:
+	if run_over:
+		return
+	var result = GameState.die()
+	show_results(
+		"YOU DIED",
+		"Kept: %d   Lost: %d" % [result.kept, result.lost]
+	)
+
+# Called by the extraction point when the player touches it
+func on_extraction_reached() -> void:
+	if run_over:
+		return
+	var banked = GameState.extract()
+	show_results(
+		"EXTRACTED!",
+		"Banked: %d" % banked
+	)
+
+func show_results(title: String, details: String) -> void:
+	run_over = true
+	%TitleLabel.text = title
+	%ResultLabel.text = details + "\nTotal banked: %d" % GameState.banked_gold
 	%GameOver.visible = true
 	get_tree().paused = true
-	
+
+func _on_restart_pressed() -> void:
+	get_tree().paused = false
+	get_tree().reload_current_scene()
+
+# --- Timers ----------------------------------------------------------------
+
 func _on_win_timer_timeout() -> void:
 	time_left -= 1
 
@@ -48,7 +85,7 @@ func _on_win_timer_timeout() -> void:
 
 func _on_story_timer_timeout() -> void:
 	story_index += 1
-	
+
 	if story_index < story_list.size():
 		%StoryLabel.text = story_list[story_index]
 		%StoryTimer.start()

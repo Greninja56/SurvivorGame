@@ -15,12 +15,16 @@ func _physics_process(delta):
 func take_damage():
 	health -= 1
 	%Slime.play_hurt()
-	
+
 	if health <= 0:
 		queue_free()
-		
+
 		const SMOKE_SCENE = preload("res://smoke_explosion/smoke_explosion.tscn")
 		var smoke = SMOKE_SCENE.instantiate()
 		get_parent().add_child(smoke)
 		smoke.global_position = global_position
-	
+
+		const GOLD_SCENE = preload("res://gold_pickup.tscn")
+		var gold = GOLD_SCENE.instantiate()
+		gold.position = position
+		get_parent().add_child.call_deferred(gold)
