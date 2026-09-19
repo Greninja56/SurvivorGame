@@ -2,7 +2,12 @@
 
 [ext_resource type="PackedScene" uid="uid://c1sx7bic4uhdj" path="res://player.tscn" id="1_3cish"]
 [ext_resource type="Script" uid="uid://c1bfau31nfqio" path="res://survivors_game.gd" id="1_l26od"]
+[ext_resource type="Script" uid="uid://b813erkif41hr" path="res://ExtractionCompass.gd" id="2_getvi"]
 [ext_resource type="PackedScene" uid="uid://c0gpy0pye4jr6" path="res://tree.tscn" id="2_y3pti"]
+[ext_resource type="Texture2D" uid="uid://kj8jl1707xie" path="res://images.png" id="3_3uxnc"]
+[ext_resource type="Script" uid="uid://ceu184b2mr0ns" path="res://TreeSpawner.gd" id="4_qqaft"]
+[ext_resource type="Script" uid="uid://c123a62olpum0" path="res://ExtractionSpawner.gd" id="5_edxvn"]
+[ext_resource type="PackedScene" uid="uid://w63eo74x6h1o" path="res://extraction_point.tscn" id="6_pk6fm"]
 
 [sub_resource type="Curve2D" id="Curve2D_qqaft"]
 _data = {
@@ -50,7 +55,24 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="Player" parent="." unique_id=386298152 instance=ExtResource("1_3cish")]
+[node name="ExtractionCompass" type="Control" parent="CanvasLayer" unique_id=545605285]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_getvi")
+extraction_spawner_path = NodePath("../../ExtractionSpawner")
+
+[node name="Arrow" type="TextureRect" parent="CanvasLayer/ExtractionCompass" unique_id=18674096]
+layout_mode = 0
+offset_right = 430.0
+offset_bottom = 430.0
+scale = Vector2(0.24000001, 0.19999939)
+texture = ExtResource("3_3uxnc")
+
+[node name="Player" parent="." unique_id=386298152 groups=["player"] instance=ExtResource("1_3cish")]
 position = Vector2(929, 495)
 
 [node name="Path2D" type="Path2D" parent="Player" unique_id=838151941]
@@ -62,36 +84,9 @@ unique_name_in_owner = true
 position = Vector2(-99, -184)
 rotation = 0.0018621953
 
-[node name="Tree" parent="." unique_id=1523048515 instance=ExtResource("2_y3pti")]
-position = Vector2(228, 215)
-
-[node name="Tree2" parent="." unique_id=1191857320 instance=ExtResource("2_y3pti")]
-position = Vector2(538, 855)
-
-[node name="Tree3" parent="." unique_id=1856596494 instance=ExtResource("2_y3pti")]
-position = Vector2(1229, 953)
-
-[node name="Tree4" parent="." unique_id=1753264521 instance=ExtResource("2_y3pti")]
-position = Vector2(1568, 178)
-
-[node name="Tree5" parent="." unique_id=1090949852 instance=ExtResource("2_y3pti")]
-position = Vector2(1487, 259)
-
-[node name="Tree6" parent="." unique_id=855317967 instance=ExtResource("2_y3pti")]
-position = Vector2(1623, 355)
-
-[node name="Tree7" parent="." unique_id=1230680576 instance=ExtResource("2_y3pti")]
-position = Vector2(1647, 840)
-
-[node name="Tree8" parent="." unique_id=1439819406 instance=ExtResource("2_y3pti")]
-position = Vector2(591, 303)
-
-[node name="Tree9" parent="." unique_id=900341920 instance=ExtResource("2_y3pti")]
-position = Vector2(125, 695)
-
 [node name="Timer" type="Timer" parent="." unique_id=155379037]
 unique_name_in_owner = true
-wait_time = 0.3
+wait_time = 0.18
 
 [node name="GameOver" type="CanvasLayer" parent="." unique_id=658550123]
 unique_name_in_owner = true
@@ -155,6 +150,20 @@ unique_name_in_owner = true
 [node name="StoryTimer" type="Timer" parent="." unique_id=344683127]
 unique_name_in_owner = true
 wait_time = 2.0
+
+[node name="TreeSpawner" type="Node2D" parent="." unique_id=1700151727]
+script = ExtResource("4_qqaft")
+tree_scenes = Array[PackedScene]([ExtResource("2_y3pti")])
+chunk_size = 800
+min_tree_spacing = 120.0
+
+[node name="ExtractionSpawner" type="Node2D" parent="." unique_id=1669762449]
+unique_name_in_owner = true
+script = ExtResource("5_edxvn")
+extraction_scene = ExtResource("6_pk6fm")
+min_radius = 4000.0
+max_radius = 8000.0
+max_placement_attempts = 1
 
 [connection signal="health_depleted" from="Player" to="." method="_on_player_health_depleted"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

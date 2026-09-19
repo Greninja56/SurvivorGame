@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://w63eo74x6h1o"]
+
+[ext_resource type="Script" uid="uid://7ulqwux4muvd" path="res://ExtractionPoint.gd" id="1_2cs3g"]
+[ext_resource type="Texture2D" uid="uid://bycxug4ei2uj5" path="res://heli.jpeg" id="1_sbe3x"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vpvrv"]
+size = Vector2(0.8592644, 1.0748348)
+
+[node name="ExtractionPoint" type="Area2D" unique_id=1874121301]
+script = ExtResource("1_2cs3g")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1909992029]
+texture = ExtResource("1_sbe3x")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=36499637]
+position = Vector2(-22, 12.999994)
+scale = Vector2(282.8, 204.45003)
+shape = SubResource("RectangleShape2D_vpvrv")
+debug_color = Color(0.97169274, 0.17054728, 0, 0.41960785)

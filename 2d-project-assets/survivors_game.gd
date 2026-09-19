@@ -1,6 +1,6 @@
 extends Node2D
 
-var time_left = 60
+var time_left = 2
 
 var story_index = 0
 
@@ -27,7 +27,6 @@ func spawn_mob():
 	var random_size = randf_range(0.5, 1.5)
 	new_mob.scale = Vector2(random_size, random_size)
 	add_child(new_mob)
-	
 
 func _on_timer_timeout() -> void:
 	spawn_mob()
@@ -35,19 +34,25 @@ func _on_timer_timeout() -> void:
 func _on_player_health_depleted() -> void:
 	%GameOver.visible = true
 	get_tree().paused = true
-
+	
 func _on_win_timer_timeout() -> void:
 	time_left -= 1
-	%Countdown.text = "Survive: " + str(time_left)
+
 	if time_left <= 0:
-		%Victory.visible = true
-		get_tree().paused = true
+		time_left = 0
+		%Countdown.text = "Get to the extraction point!"
+		%WinTimer.stop()
+		%ExtractionSpawner.spawn_extraction_point()
+	else:
+		%Countdown.text = "Survive: " + str(time_left)
 
 func _on_story_timer_timeout() -> void:
 	story_index += 1
+	
 	if story_index < story_list.size():
 		%StoryLabel.text = story_list[story_index]
 		%StoryTimer.start()
 	else:
 		%StoryLabel.visible = false
+		%StoryTimer.stop()
 		start_game()
